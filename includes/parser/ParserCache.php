@@ -180,6 +180,8 @@ class ParserCache {
 		$parserOutputKey = $this->getKey( $article, $popts, $useOutdated );
 		if ( $parserOutputKey === false ) {
 			wfIncrStats( 'pcache_miss_absent' );
+			wfProfileIn(__METHOD__ . " CACHE MISS");
+			wfProfileOut(__METHOD__ . " CACHE MISS");
 			wfProfileOut( __METHOD__ );
 			return false;
 		}
@@ -194,12 +196,15 @@ class ParserCache {
 		if ( !$value ) {
 			wfDebug( "ParserOutput cache miss.\n" );
 			wfIncrStats( "pcache_miss_absent" );
+			wfProfileIn(__METHOD__ . " CACHE MISS");
+			wfProfileOut(__METHOD__ . " CACHE MISS");
 			wfProfileOut( __METHOD__ );
 			return false;
 		}
 
 		wfDebug( "ParserOutput cache found.\n" );
 
+		
 		// The edit section preference may not be the appropiate one in 
 		// the ParserOutput, as we are not storing it in the parsercache 
 		// key. Force it here. See bug 31445.
@@ -207,10 +212,14 @@ class ParserCache {
 
 		if ( !$useOutdated && $value->expired( $touched ) ) {
 			wfIncrStats( "pcache_miss_expired" );
+			wfProfileIn(__METHOD__ . " CACHE MISS");
+			wfProfileOut(__METHOD__ . " CACHE MISS");
 			$cacheTime = $value->getCacheTime();
 			wfDebug( "ParserOutput key expired, touched $touched, epoch $wgCacheEpoch, cached $cacheTime\n" );
 			$value = false;
 		} else {
+			wfProfileIn(__METHOD__ . " CACHE HIT");
+			wfProfileOut(__METHOD__ . " CACHE HIT");
 			wfIncrStats( "pcache_hit" );
 		}
 

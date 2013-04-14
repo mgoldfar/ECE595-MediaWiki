@@ -46,6 +46,9 @@ if ( !function_exists( 'version_compare' ) || version_compare( phpversion(), '5.
 	wfPHPVersionError( 'index.php' );
 }
 
+// Set to true so we know the current request is for index.php
+$wgIsIndexScript=true;
+
 # Initialise common code.  This gives us access to GlobalFunctions, the
 # AutoLoader, and the globals $wgRequest, $wgOut, $wgUser, $wgLang and
 # $wgContLang, amongst others; it does *not* load $wgTitle

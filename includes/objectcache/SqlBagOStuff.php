@@ -162,10 +162,10 @@ class SqlBagOStuff extends BagOStuff {
 	 * @return mixed
 	 */
 	public function get( $key ) {
-		wfProfileIn(__FUNCTION__ . " " . $key);
+		wfProfileIn(__METHOD__ . " " . $key);
 		$values = $this->getMulti( array( $key ) );
 		$res = array_key_exists( $key, $values ) ? $values[$key] : false;
-		wfProfileOut(__FUNCTION__ . " " . $key);
+		wfProfileOut(__METHOD__ . " " . $key);
 		return $res;
 	}
 

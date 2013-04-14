@@ -105,7 +105,7 @@ if ( isset( $_SERVER['MW_COMPILED'] ) ) {
 
 # Start the profiler
 $wgProfiler = array();
-if ( file_exists( "$IP/StartProfiler.php" ) ) {
+if ( isset($wgIsIndexScript) && file_exists( "$IP/StartProfiler.php" ) ) {
 	require( "$IP/StartProfiler.php" );
 }
 

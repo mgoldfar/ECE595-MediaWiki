@@ -88,10 +88,38 @@ class ECE595Trace extends ProfilerSimple {
 		// send to memcached client:
 		//require_once( "./includes/objectcache/MemcachedClient.php" );
 		$start = $this->getTime();
-		$mc = new MWMemcached(array("servers"=>array("localhost:11211")));
+		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>true));
+		//$gztrace = gzencode($this->trace, 5);
 		$mc->set("trace", $this->trace);
+		
+		//$this->sendToLogServer(gethostbyname("localhost"), 8888);
 
 		$total = ($this->getTime() - $start);
 		print "<!-- Trace Logging Time: $total -->\n";
+	}
+	
+	function sendToLogServer($address, $port) {
+		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		$socket_msgs = "";
+		if ($socket === false) {
+		    $socket_msgs = $socket_msgs . "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
+		} else {
+		     $socket_msgs = $socket_msgs . "OK.\n";
+		}
+
+		$socket_msgs = $socket_msgs .  "Attempting to connect to '$address' on port '$port'...";
+		$result = socket_connect($socket, $address, $port);
+		if ($result === false) {
+		     $socket_msgs = $socket_msgs . "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+		} else {
+		     $socket_msgs = $socket_msgs . "OK.\n";
+		}
+
+		$socket_msgs = $socket_msgs .  "Sending HTTP HEAD request...";
+		socket_write($socket, $this->trace, strlen($this->trace));
+		$socket_msgs = $socket_msgs .  "OK.\n";
+		
+		print "<!-- $socket_msgs -->\n";
+		
 	}
 }
