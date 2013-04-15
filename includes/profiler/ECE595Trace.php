@@ -1,7 +1,7 @@
 <?php
 
 class ECE595Trace extends ProfilerSimple {
-	var $trace = "Beginning trace: \n";
+	var $trace = "";
 	var $trace_array = array();
 	var $memory = 0;
 	
@@ -82,15 +82,28 @@ class ECE595Trace extends ProfilerSimple {
 			}
 		}
 		
-		print "<!-- \n {$this->trace} \n -->\n";
+		// Append the trace info to the top:
+		global $wgRequest;
+		$trace_header = "Request URL=" . $wgRequest->getRequestURL() . "\n" . 
+					    "Request Method=" . $wgRequest->getMethod() . "\n" .
+						"Request ID=" . $wgRequest->getText("RequestID") . "\n";
+		$this->trace = $trace_header . $this->trace;
+		
+		// By default keep the trace hidden
+		if($wgRequest->getText("ShowTrace") != "") {
+			print "<!-- \n {$this->trace} \n -->\n";
+		}
+		
 		print "<!-- Total Execution Time: $total_time -->\n";
 		
 		// send to memcached client:
 		//require_once( "./includes/objectcache/MemcachedClient.php" );
 		$start = $this->getTime();
-		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>true));
+		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>false));
 		//$gztrace = gzencode($this->trace, 5);
-		$mc->set("trace", $this->trace);
+		
+		$key = "trace_" .  $wgRequest->getText("RequestID");
+		$mc->set($key, $this->trace);
 		
 		//$this->sendToLogServer(gethostbyname("localhost"), 8888);
 
