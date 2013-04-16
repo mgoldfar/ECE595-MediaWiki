@@ -1,4 +1,4 @@
-<?php
+<?plhp
 /**
  * Version of redirect.php to used in web server requiring .php5 extension
  * to execute scripts with PHP5 egine.

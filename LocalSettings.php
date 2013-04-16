@@ -131,7 +131,8 @@ $wgDiff3 = "/usr/bin/diff3";
 # that value)
 $wgResourceLoaderMaxQueryLength = -1;
 
-
+$wgDebugComments = true;
+$wgShowExceptionDetails = true;
 
 # End of automatically generated settings.
 # Add more configuration options below.

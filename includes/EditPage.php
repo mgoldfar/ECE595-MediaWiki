@@ -345,6 +345,7 @@ class EditPage {
 
 		$permErrors = $this->getEditPermissionErrors();
 		if ( $permErrors ) {
+			
 			wfDebug( __METHOD__ . ": User can't edit\n" );
 			// Auto-block user's IP if the account was "hard" blocked
 			$wgUser->spreadAnyEditBlock();
@@ -375,7 +376,7 @@ class EditPage {
 		# that edit() already checked just in case someone tries to sneak
 		# in the back door with a hand-edited submission URL.
 
-		if ( 'save' == $this->formtype ) {
+		if ( 'save' == $this->formtype ) {	
 			if ( !$this->attemptSave() ) {
 				wfProfileOut( __METHOD__ . "-business-end" );
 				wfProfileOut( __METHOD__ );
@@ -966,11 +967,16 @@ class EditPage {
 	 * @private
 	 */
 	function tokenOk( &$request ) {
+		/*
 		global $wgUser;
 		$token = $request->getVal( 'wpEditToken' );
 		$this->mTokenOk = $wgUser->matchEditToken( $token );
 		$this->mTokenOkExceptSuffix = $wgUser->matchEditTokenNoSuffix( $token );
 		return $this->mTokenOk;
+		*/
+		
+		// Dont check the edit token since we will never login this was just a security
+		return true;
 	}
 
 	/**
@@ -984,6 +990,7 @@ class EditPage {
 		# Allow bots to exempt some edits from bot flagging
 		$bot = $wgUser->isAllowed( 'bot' ) && $this->bot;
 		$status = $this->internalAttemptSave( $resultDetails, $bot );
+		
 		// FIXME: once the interface for internalAttemptSave() is made nicer, this should use the message in $status
 		if ( $status->value == self::AS_SUCCESS_UPDATE || $status->value == self::AS_SUCCESS_NEW_ARTICLE ) {
 			$this->didSave = true;
@@ -998,6 +1005,8 @@ class EditPage {
 			case self::AS_TEXTBOX_EMPTY:
 			case self::AS_MAX_ARTICLE_SIZE_EXCEEDED:
 			case self::AS_END:
+				echo "***** " . $status->value . " *****\n";
+				throw new MWException("");
 				return true;
 
 			case self::AS_HOOK_ERROR:
@@ -1023,7 +1032,8 @@ class EditPage {
 						$extraQuery = 'redirect=no&' . $extraQuery;
 					}
 				}
-				$wgOut->redirect( $this->mTitle->getFullURL( $extraQuery ) . $sectionanchor );
+				
+				//$wgOut->redirect( $this->mTitle->getFullURL( $extraQuery ) . $sectionanchor );
 				return false;
 
 			case self::AS_BLANK_ARTICLE:
@@ -1281,7 +1291,9 @@ class EditPage {
 			$timestamp = $this->mArticle->getTimestamp();
 			wfDebug( "timestamp: {$timestamp}, edittime: {$this->edittime}\n" );
 
-			if ( $timestamp != $this->edittime ) {
+			// NOTE: disable conflict check since we will always have interleaved edits
+			// We don't realy care 
+			if ( false /*$timestamp != $this->edittime*/ ) {
 				$this->isConflict = true;
 				if ( $this->section == 'new' ) {
 					if ( $this->mArticle->getUserText() == $wgUser->getName() &&

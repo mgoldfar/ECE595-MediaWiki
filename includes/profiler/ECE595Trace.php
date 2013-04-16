@@ -102,8 +102,10 @@ class ECE595Trace extends ProfilerSimple {
 		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>false));
 		//$gztrace = gzencode($this->trace, 5);
 		
-		$key = "trace_" .  $wgRequest->getText("RequestID");
-		$mc->set($key, $this->trace);
+		if ($wgRequest->getText("RequestID") !== "") {
+			$key = "trace_" .  $wgRequest->getText("RequestID");
+			$mc->set($key, $this->trace);
+		}
 		
 		//$this->sendToLogServer(gethostbyname("localhost"), 8888);
 

@@ -1,0 +1,39 @@
+
+
+Start request GET /~michael/index.php/FooLink
+HTTP HEADERS:
+HOST: localhost
+USER-AGENT: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.28.10 (KHTML, like Gecko) Version/6.0.3 Safari/536.28.10
+ACCEPT: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+ACCEPT-LANGUAGE: en-us
+ACCEPT-ENCODING: gzip, deflate
+COOKIE: wiki_wiki__session=63330b0860e340fe5e1da52fc24456ab
+CONNECTION: keep-alive
+CACHES: EmptyBagOStuff[main] EmptyBagOStuff[message] SqlBagOStuff[parser]
+session_set_cookie_params: "0", "/", "", "", "1"
+LocalisationCache: using store LCStore_DB
+Fully initialised
+Connecting to 127.0.0.1 wiki...
+Connected to 127.0.0.1 wiki.
+Title::getRestrictionTypes: applicable restrictions to [[FooLink]] are {edit,move}
+IP: fe80::1
+MessageCache::load: Loading en... cache is empty, loading from database
+Unstubbing $wgParser on call of $wgParser::firstCallInit from MessageCache::getParser
+Parser: using preprocessor: Preprocessor_DOM
+Unstubbing $wgLang on call of $wgLang::_unstub from ParserOptions::__construct
+OutputPage::checkLastModified: client did not send If-Modified-Since header
+Article::view using parser cache: yes
+Connecting to 127.0.0.1 wiki...
+Connected to 127.0.0.1 wiki.
+Parser options key expired, touched 20130415183300, epoch 20130415225338, cached 20130415183300
+Article::view: doing uncached parse
+Parser cache options found.
+Saved in parser cache with key wiki-wiki_:pcache:idhash:4-0!*!*!*!*!*!* and timestamp 20130415225528
+DatabaseBase::query: Writes done: REPLACE INTO `wiki_objectcache` (keyname,value,exptime) VALUES ('wiki-wiki_:pcache:idhash:4-0!*!*!*!*!*!*','uTmOÛ0 Şçş\nã“º&i Ì-•&ÆV$ •è¶È$Gc‘Ø‘íĞvˆÿ¾»¼@ZX+5é½ùyÎÏİB„‘àKi ØEé‹Òs1 Šg\'Æ‚ç+Øz>Á÷ğXği\ZÍ¦ùF@¢¼ƒØ+£Y!×pÆ s¥ô#gùŒ‡|6 ™€eÑt°Ÿ3cSWHÍâL:wÆóM?ÅÈLiàL%g¼Î»‹øŒµ%Øt@)³é\0!ôzÓ£~Ÿõn`³\\²LåÊ3 …±¾·Ä§518g,{RNyH˜6	°Ø”Ú  \rÂ úì‡®Aƒ•‡Á§oÁÆù>l BÂ”³ ƒœú ‚ ƒ(øz #v¿óàz+È‹ +1i×e Úÿ\'n®Ö)8Ïª¢:™@áSB8\nz Û Ğú Ø_º öPêºß\r´€ õúı¶ ·ò	 Z  Ë8 ¶Q>e°Ã—GÕ§Ÿ;QT.¡’TºTŒúÁÑç·/#‚^åˆLæ ‹‚p Œ t4 G§Œ#1„#TÆ•Ôë /Ÿîİñ‰ x~A_ˆ¾slÀÚX ]G@rR>ƒVS\'âU7øï˜j ÔªRš†víQÇ~™t<X2¿Ì U7ú ?T · mœ.\nêc×Ol.¶ ¬–Ù! šK>jŞGTQ„·µ¬ùä^ “&g® øÀE„nÌO™e`w{VRú¥‡¼SŸp_›¤Ìà mm½­*|×7|óùİ~ÚøÕu’?è õ³ı¹1]Š_ÑñGZ­ôúÀÚ0«¬¡xVÈD\"âç\n¶7q Oñ‰ á¤Ú$Í<LğˆÈ£\ZùI•Ñ z£ ]æ÷`›ğ×%”N`Ûµ! krO¢z/(j+Íšyxpà	JP —:Nİ; —Íä¥ÕÊ ®ª†ŞÊ< q¼¯hT ¾´¦\0ë÷´MY«Åù|u}Eeñà \0*¾ ¦vpÚ™\nO‡Ã  k„˜>u ğ\'” R]šLÅ»NÁağ.ğ[L  ’wª ßÅ\"\'£ iwß¥—¿Šd¨ˆÃo°®’kÕïğËñ—Ñ+‘sZ ÄæH½ *kÔÆáşR$ğ ²ÒP í¥Òn‘%×r­âZû/ÿ\0','20130416225528')
+Title::getRestrictionTypes: applicable restrictions to [[FooLink]] are {edit,move}
+Class PEAR_Error not found; skipped loading
+DatabaseBase::query: Writes done: REPLACE INTO `wiki_msg_resource` (mr_resource,mr_lang,mr_blob,mr_timestamp) VALUES ('user.options','en','{}','20130415225528')
+OutputPage::sendCacheControl: private caching; Mon, 15 Apr 2013 22:53:38 GMT **
+20130415225528	0.410	/~michael/index.php/FooLink anon
+No profiling output
+Request ended normally
