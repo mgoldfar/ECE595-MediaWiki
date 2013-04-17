@@ -103,7 +103,7 @@ class ECE595Trace extends ProfilerSimple {
 		//$gztrace = gzencode($this->trace, 5);
 		
 		if ($wgRequest->getText("RequestID") !== "") {
-			$key = "trace_" .  $wgRequest->getText("RequestID");
+			$key = $wgRequest->getText("RequestID");
 			$mc->set($key, $this->trace);
 		}
 		
