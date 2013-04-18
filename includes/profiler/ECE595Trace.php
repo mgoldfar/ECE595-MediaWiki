@@ -91,7 +91,12 @@ class ECE595Trace extends ProfilerSimple {
 		
 		// By default keep the trace hidden
 		if($wgRequest->getText("ShowTrace") != "") {
-			print "<!-- \n {$this->trace} \n -->\n";
+			if($wgRequest->getText("ShowTrace") == "screen") {
+			  print "<br/><br/><br/><br/><br/>";
+			  print "<pre> \n {$this->trace} \n </pre>";
+			} else {			
+			  print "<!-- \n {$this->trace} \n -->\n";
+			}
 		}
 		
 		print "<!-- Total Execution Time: $total_time -->\n";
