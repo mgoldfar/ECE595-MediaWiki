@@ -42,11 +42,14 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return resource
 	 */
 	protected function doQuery( $sql ) {
+		wfProfileIn(__METHOD__ . " " . $sql);
 		if( $this->bufferResults() ) {
 			$ret = mysql_query( $sql, $this->mConn );
 		} else {
 			$ret = mysql_unbuffered_query( $sql, $this->mConn );
 		}
+		
+		wfProfileOut(__METHOD__ . " " . $sql);
 		return $ret;
 	}
 
@@ -180,6 +183,9 @@ class DatabaseMysql extends DatabaseBase {
 	 * @throws DBUnexpectedError
 	 */
 	function freeResult( $res ) {
+		
+		wfProfileIn(__METHOD__);
+		
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
@@ -189,6 +195,8 @@ class DatabaseMysql extends DatabaseBase {
 		if ( !$ok ) {
 			throw new DBUnexpectedError( $this, "Unable to free MySQL result" );
 		}
+		
+		wfProfileOut(__METHOD__);
 	}
 
 	/**
@@ -200,6 +208,9 @@ class DatabaseMysql extends DatabaseBase {
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
+		
+		wfProfileIn(__METHOD__);
+		
 		wfSuppressWarnings();
 		$row = mysql_fetch_object( $res );
 		wfRestoreWarnings();
@@ -212,6 +223,9 @@ class DatabaseMysql extends DatabaseBase {
 		if( $errno == 2000 || $errno == 2013 ) {
 			throw new DBUnexpectedError( $this, 'Error in fetchObject(): ' . htmlspecialchars( $this->lastError() ) );
 		}
+		
+		wfProfileOut(__METHOD__);
+		
 		return $row;
 	}
 
@@ -221,6 +235,8 @@ class DatabaseMysql extends DatabaseBase {
 	 * @throws DBUnexpectedError
 	 */
 	function fetchRow( $res ) {
+		wfProfileIn(__METHOD__);
+		
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
@@ -236,6 +252,8 @@ class DatabaseMysql extends DatabaseBase {
 		if( $errno == 2000 || $errno == 2013 ) {
 			throw new DBUnexpectedError( $this, 'Error in fetchRow(): ' . htmlspecialchars( $this->lastError() ) );
 		}
+		
+		wfProfileOut(__METHOD__);
 		return $row;
 	}
 
@@ -245,6 +263,7 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return int
 	 */
 	function numRows( $res ) {
+		wfProfileIn(__METHOD__);
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
@@ -254,6 +273,7 @@ class DatabaseMysql extends DatabaseBase {
 		if( $this->lastErrno() ) {
 			throw new DBUnexpectedError( $this, 'Error in numRows(): ' . htmlspecialchars( $this->lastError() ) );
 		}
+		wfProfileOut(__METHOD__);
 		return $n;
 	}
 
@@ -262,10 +282,13 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return int
 	 */
 	function numFields( $res ) {
+		wfProfileIn(__METHOD__);
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
-		return mysql_num_fields( $res );
+		$n = mysql_num_fields( $res );
+		wfProfileOut(__METHOD__);
+		return $n;
 	}
 
 	/**
@@ -274,17 +297,23 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return string
 	 */
 	function fieldName( $res, $n ) {
+		wfProfileIn(__METHOD__);
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
-		return mysql_field_name( $res, $n );
+		$r = mysql_field_name( $res, $n );
+		wfProfileOut(__METHOD__);
+		return $r;
 	}
 
 	/**
 	 * @return int
 	 */
 	function insertId() {
-		return mysql_insert_id( $this->mConn );
+		wfProfileIn(__METHOD__);
+		$id = mysql_insert_id( $this->mConn );
+		wfProfileOut(__METHOD__);
+		return $id;
 	}
 
 	/**
@@ -293,10 +322,13 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return bool
 	 */
 	function dataSeek( $res, $row ) {
+		wfProfileIn(__METHOD__);
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
 		}
-		return mysql_data_seek( $res, $row );
+		$r = mysql_data_seek( $res, $row );
+		wfProfileOut(__METHOD__);
+		return $r;
 	}
 
 	/**
@@ -715,14 +747,17 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return bool
 	 */
 	public function lock( $lockName, $method, $timeout = 5 ) {
+		wfProfileIn(__METHOD__ . " " . $lockName);
 		$lockName = $this->addQuotes( $lockName );
 		$result = $this->query( "SELECT GET_LOCK($lockName, $timeout) AS lockstatus", $method );
 		$row = $this->fetchObject( $result );
 
 		if( $row->lockstatus == 1 ) {
+			wfProfileOut(__METHOD__ . " " . $lockName);
 			return true;
 		} else {
 			wfDebug( __METHOD__." failed to acquire lock\n" );
+			wfProfileOut(__METHOD__ . " " . $lockName);
 			return false;
 		}
 	}
@@ -734,10 +769,13 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return bool
 	 */
 	public function unlock( $lockName, $method ) {
+		wfProfileIn(__METHOD__ . " " . $lockName);
 		$lockName = $this->addQuotes( $lockName );
 		$result = $this->query( "SELECT RELEASE_LOCK($lockName) as lockstatus", $method );
 		$row = $this->fetchObject( $result );
-		return ( $row->lockstatus == 1 );
+		$r = ( $row->lockstatus == 1 );
+		wfProfileOut(__METHOD__ . " " . $lockName);
+		return $r;
 	}
 
 	/**
@@ -747,6 +785,9 @@ class DatabaseMysql extends DatabaseBase {
 	 * @param $lowPriority bool
 	 */
 	public function lockTables( $read, $write, $method, $lowPriority = true ) {
+		$strRead = implode(", ", $read);
+		$strWrite = implode(", ", $write);
+		wfProfileIn(__METHOD__ . " R: " . $strRead . " W: " . $strWrite);
 		$items = array();
 
 		foreach( $write as $table ) {
@@ -760,13 +801,16 @@ class DatabaseMysql extends DatabaseBase {
 		}
 		$sql = "LOCK TABLES " . implode( ',', $items );
 		$this->query( $sql, $method );
+		wfProfileOut(__METHOD__ . " R: " . $strRead . " W: " . $strWrite);
 	}
 
 	/**
 	 * @param $method string
 	 */
 	public function unlockTables( $method ) {
+		wfProfileIn(__METHOD__);
 		$this->query( "UNLOCK TABLES", $method );
+		wfProfileOut(__METHOD__);
 	}
 
 	/**
@@ -809,6 +853,7 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return bool|ResultWrapper
 	 */
 	function deleteJoin( $delTable, $joinTable, $delVar, $joinVar, $conds, $fname = 'DatabaseBase::deleteJoin' ) {
+		wfProfileIn(__METHOD__);
 		if ( !$conds ) {
 			throw new DBUnexpectedError( $this, 'DatabaseBase::deleteJoin() called with empty $conds' );
 		}
@@ -821,7 +866,10 @@ class DatabaseMysql extends DatabaseBase {
 			$sql .= ' AND ' . $this->makeList( $conds, LIST_AND );
 		}
 
-		return $this->query( $sql, $fname );
+		$r = $this->query( $sql, $fname );
+		
+		wfProfileOut(__METHOD__);
+		return $r;
 	}
 
 	/**

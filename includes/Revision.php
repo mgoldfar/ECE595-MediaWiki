@@ -1099,10 +1099,17 @@ class Revision implements IDBAccessObject {
 		$key = wfMemcKey( 'revisiontext', 'textid', $textId );
 		if( $wgRevisionCacheExpiry ) {
 			$text = $wgMemc->get( $key );
+			
+			
 			if( is_string( $text ) ) {
 				wfDebug( __METHOD__ . ": got id $textId from cache\n" );
+				wfProfileIn(__METHOD__ . " CACHE HIT");
+				wfProfileOut(__METHOD__ . " CACHE HIT");
 				wfProfileOut( __METHOD__ );
 				return $text;
+			} else {
+				wfProfileIn(__METHOD__ . " CACHE MISS");
+				wfProfileOut(__METHOD__ . " CACHE MISS");
 			}
 		}
 

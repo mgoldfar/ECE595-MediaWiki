@@ -70,7 +70,7 @@ $wgDBmysql5 = false;
 ## Shared memory settings
 $wgMainCacheType    = CACHE_NONE;
 $wgMessageCacheType = CACHE_NONE;
-$wgParserCacheType  = CACHE_DB;
+$wgParserCacheType  = CACHE_NONE;
 $wgSessionCacheType = CACHE_NONE;
 $wgLanguageConverterCacheType = CACHE_NONE;
 $wgResourceLoaderCacheType = CACHE_NONE;

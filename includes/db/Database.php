@@ -815,22 +815,9 @@ abstract class DatabaseBase implements DatabaseType {
 	 */
 	public function query( $sql, $fname = '', $tempIgnore = false ) {
 		$isMaster = !is_null( $this->getLBInfo( 'master' ) );
-		if ( !Profiler::instance()->isStub() ) {
-			# generalizeSQL will probably cut down the query to reasonable
-			# logging size most of the time. The substr is really just a sanity check.
-
-			if ( $isMaster ) {
-				$queryProf = 'query-m: ' . substr( DatabaseBase::generalizeSQL( $sql ), 0, 255 );
-				$totalProf = 'DatabaseBase::query-master';
-			} else {
-				$queryProf = 'query: ' . $sql; //substr( DatabaseBase::generalizeSQL( $sql ), 0, 255 );
-				$totalProf = 'DatabaseBase::query';
-			}
-
-			//wfProfileIn( $totalProf );
-			wfProfileIn( $queryProf );
-		}
-
+		$isMasterStr = $isMaster ? "1" : "0";
+		wfProfileIn(__METHOD__ . " ismaster=" . $isMasterStr);
+		
 		$this->mLastQuery = $sql;
 		if ( !$this->mDoneWrites && $this->isWriteQuery( $sql ) ) {
 			# Set a flag indicating that writes have been done
@@ -879,6 +866,7 @@ abstract class DatabaseBase implements DatabaseType {
 		}
 
 		if ( istainted( $sql ) & TC_MYSQL ) {
+			wfProfileOut(__METHOD__ . " ismaster=" . $isMasterStr);
 			throw new MWException( 'Tainted query found' );
 		}
 
@@ -915,13 +903,11 @@ abstract class DatabaseBase implements DatabaseType {
 		if ( false === $ret ) {
 			$this->reportQueryError( $this->lastError(), $this->lastErrno(), $sql, $fname, $tempIgnore );
 		}
-
-		if ( !Profiler::instance()->isStub() ) {
-			wfProfileOut( $queryProf );
-			//wfProfileOut( $totalProf );
-		}
-
-		return $this->resultObject( $ret );
+		
+		$res = $this->resultObject( $ret );
+		
+		wfProfileOut(__METHOD__ . " ismaster=" . $isMasterStr);	
+		return $res;
 	}
 
 	/**

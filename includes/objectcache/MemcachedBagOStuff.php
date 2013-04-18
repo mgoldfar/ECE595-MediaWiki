@@ -60,7 +60,10 @@ class MemcachedBagOStuff extends BagOStuff {
 	 * @return Mixed
 	 */
 	public function get( $key ) {
-		return $this->client->get( $this->encodeKey( $key ) );
+		wfProfileIn(__METHOD__ . " " . $key);
+		$result = $this->client->get( $this->encodeKey( $key ) );
+		wfProfileOut(__METHOD__ . " " . $key);
+		return $result;
 	}
 
 	/**
@@ -70,8 +73,12 @@ class MemcachedBagOStuff extends BagOStuff {
 	 * @return bool
 	 */
 	public function set( $key, $value, $exptime = 0 ) {
-		return $this->client->set( $this->encodeKey( $key ), $value,
+		wfProfileIn(__METHOD__ . " " . $key);
+		$result = $this->client->set( $this->encodeKey( $key ), $value,
 			$this->fixExpiry( $exptime ) );
+		wfProfileOut(__METHOD__ . " " . $key);
+		
+		return $result;
 	}
 
 	/**
@@ -80,7 +87,10 @@ class MemcachedBagOStuff extends BagOStuff {
 	 * @return bool
 	 */
 	public function delete( $key, $time = 0 ) {
-		return $this->client->delete( $this->encodeKey( $key ), $time );
+		wfProfileIn(__METHOD__ . " " . $key);
+		$result = $this->client->delete( $this->encodeKey( $key ), $time );
+		wfProfileOut(__METHOD__ . " " . $key);
+		return $result;
 	}
 
 	/**
@@ -90,8 +100,11 @@ class MemcachedBagOStuff extends BagOStuff {
 	 * @return Mixed
 	 */
 	public function add( $key, $value, $exptime = 0 ) {
-		return $this->client->add( $this->encodeKey( $key ), $value,
+		wfProfileIn(__METHOD__ . " " . $key);
+		$result = $this->client->add( $this->encodeKey( $key ), $value,
 			$this->fixExpiry( $exptime ) );
+		wfProfileOut(__METHOD__ . " " . $key);
+		return $result;
 	}
 
 	/**
@@ -101,8 +114,11 @@ class MemcachedBagOStuff extends BagOStuff {
 	 * @return Mixed
 	 */
 	public function replace( $key, $value, $exptime = 0 ) {
-		return $this->client->replace( $this->encodeKey( $key ), $value, 
+		wfProfileIn(__METHOD__ . " " . $key);
+		$result = $this->client->replace( $this->encodeKey( $key ), $value, 
 			$this->fixExpiry( $exptime ) );
+		wfProfileOut(__METHOD__ . " " . $key);
+		return $result;
 	}
 
 	/**

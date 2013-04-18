@@ -234,7 +234,8 @@ class ParserCache {
 	 */
 	public function save( $parserOutput, $article, $popts ) {
 		$expire = $parserOutput->getCacheExpiry();
-
+		wfProfileIn(__METHOD__);
+		
 		if( $expire > 0 ) {
 			$now = wfTimestampNow();
 
@@ -264,5 +265,7 @@ class ParserCache {
 		} else {
 			wfDebug( "Parser output was marked as uncacheable and has not been saved.\n" );
 		}
+		
+		wfProfileOut(__METHOD__);
 	}
 }

@@ -3090,7 +3090,9 @@ class PoolWorkArticleView extends PoolCounterWork {
 	 */
 	function doWork() {
 		global $wgParser, $wgUseFileCache;
-
+		
+		wfProfileIn(__METHOD__);
+		
 		$isCurrent = $this->revid === $this->page->getLatest();
 
 		if ( $this->text !== null ) {
@@ -3100,6 +3102,7 @@ class PoolWorkArticleView extends PoolCounterWork {
 		} else {
 			$rev = Revision::newFromTitle( $this->page->getTitle(), $this->revid );
 			if ( $rev === null ) {
+				wfProfileOut(__METHOD__);
 				return false;
 			}
 			$text = $rev->getText();
@@ -3131,6 +3134,7 @@ class PoolWorkArticleView extends PoolCounterWork {
 			$this->page->doCascadeProtectionUpdates( $this->parserOutput );
 		}
 
+		wfProfileOut(__METHOD__);
 		return true;
 	}
 
@@ -3138,13 +3142,16 @@ class PoolWorkArticleView extends PoolCounterWork {
 	 * @return bool
 	 */
 	function getCachedWork() {
+		wfProfileIn(__METHOD__);
 		$this->parserOutput = ParserCache::singleton()->get( $this->page, $this->parserOptions );
 
 		if ( $this->parserOutput === false ) {
 			wfDebug( __METHOD__ . ": parser cache miss\n" );
+			wfProfileOut(__METHOD__);
 			return false;
 		} else {
 			wfDebug( __METHOD__ . ": parser cache hit\n" );
+			wfProfileOut(__METHOD__);
 			return true;
 		}
 	}

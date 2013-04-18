@@ -50,7 +50,12 @@ class ECE595Trace extends ProfilerSimple {
 		// > func   -->    + func
 		// < func
 		
+		global $wgRequest;
+		$screen = ($wgRequest->getText("ShowTrace") == "screen");
+		
 		$total_time = 0.0;
+		$depth = 1;
+		
 		for($i = 0; $i < count($this->trace_array); $i++) {
 			// if the function called immediatly after is the same name then it can be collapsed
 			// corner case: recursive calls, if both entries are "OPEN" then do not collapse
@@ -65,7 +70,13 @@ class ECE595Trace extends ProfilerSimple {
 			}
 			
 			if($collapse) {
-				$this->trace .= sprintf("%f %f + %s\n", $next_trace[4], $next_trace[2] + $trace[2], $trace[1]);
+				$pad = str_pad("", $depth);
+				if($screen) {
+					$s = sprintf("%f %f", $next_trace[4], $next_trace[2] + $trace[2]);
+					$this->trace .= sprintf("%-20s %s+ %s\n", $s, $pad, $trace[1]);
+				} else {
+					$this->trace .= sprintf("%f %f + %s\n", $next_trace[4], $next_trace[2] + $trace[2], $trace[1]);
+				}
 				$total_time += $next_trace[4];
 				// skip next item
 				$i += 1;
@@ -73,17 +84,30 @@ class ECE595Trace extends ProfilerSimple {
 			} else {
 				if($trace[0]) {
 					// open
-					$this->trace .= sprintf("- %f > %s\n", $trace[2], $trace[1]);
+					$pad = str_pad("", $depth);
+					$depth++;
+					if($screen) {
+						$s = sprintf("- %f", $trace[2]);
+						$this->trace .= sprintf("%-20s %s> %s\n", $s, $pad, $trace[1]);
+					} else {
+						$this->trace .= sprintf("- %f > %s\n", $trace[2], $trace[1]);
+					}
 				} else {
 					// close
-					$this->trace .= sprintf("%f %f < %s\n", $trace[4], $trace[2], $trace[1]);
+					$depth--;
+					$pad = str_pad("", $depth);
+					if($screen) {
+						$s = sprintf("%f %f", $trace[4], $trace[2]);
+						$this->trace .= sprintf("%-20s %s< %s\n", $s, $pad, $trace[1]);
+					} else {
+						$this->trace .= sprintf("%f %f < %s\n", $trace[4], $trace[2], $trace[1]);
+					}
 					$total_time += $trace[4];
 				}
 			}
 		}
 		
 		// Append the trace info to the top:
-		global $wgRequest;
 		$trace_header = "Request URL=" . $wgRequest->getRequestURL() . "\n" . 
 					    "Request Method=" . $wgRequest->getMethod() . "\n" .
 						"Request ID=" . $wgRequest->getText("RequestID") . "\n";
