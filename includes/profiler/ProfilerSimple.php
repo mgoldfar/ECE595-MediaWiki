@@ -57,12 +57,12 @@ class ProfilerSimple extends Profiler {
 		$this->mMinimumTime = $min;
 	}
 
-	function profileIn($functionname) {
+	function profileIn($functionname, $time = 'cpu') {
 		global $wgDebugFunctionEntry;
 		if ($wgDebugFunctionEntry) {
 			$this->debug(str_repeat(' ', count($this->mWorkStack)).'Entering '.$functionname."\n");
 		}
-		$this->mWorkStack[] = array( $functionname, count( $this->mWorkStack ), $this->getTime(), $this->getTime( 'cpu' ) );
+		$this->mWorkStack[] = array( $functionname, count( $this->mWorkStack ), $this->getTime(), $this->getTime( $time ) );
 	}
 
 	function profileOut($functionname) {

@@ -6,7 +6,7 @@ class ECE595Trace extends ProfilerSimple {
 	var $memory = 0;
 	
 	function profileIn( $functionname ) {
-		parent::profileIn( $functionname );
+	  parent::profileIn( $functionname, 'wall' );
 	
 		$item = array(true, $functionname, $this->memoryDiff(), count($this->mWorkStack), 0.0);
 		array_push($this->trace_array, $item);	
@@ -33,7 +33,8 @@ class ECE595Trace extends ProfilerSimple {
 				$this->trace .= "Profiling error: in({$ofname}), out($functionname)";
 			}
 			
-			$elapsedreal = $this->getTime() - $ortime;
+			$elapsedreal = $this->getTime('wall') - $ortime;
+
 			$item = array(false, $functionname, $this->memoryDiff(), count($this->mWorkStack), $elapsedreal);
 			array_push($this->trace_array, $item);
 		}
@@ -53,7 +54,6 @@ class ECE595Trace extends ProfilerSimple {
 		global $wgRequest;
 		$screen = ($wgRequest->getText("ShowTrace") == "screen");
 		
-		$total_time = 0.0;
 		$depth = 1;
 		
 		for($i = 0; $i < count($this->trace_array); $i++) {
@@ -64,8 +64,8 @@ class ECE595Trace extends ProfilerSimple {
 			$next_trace = NULL;
 			if($i + 1 < count($this->trace_array)) {
 				$next_trace = $this->trace_array[$i + 1];
-				if($trace[0] != $next_trace[0] && $trace[1] == $next_trace[1]) {
-					$collapse = true;
+				if((!$trace[0] || !$next_trace[0]) && $trace[0] != $next_trace[0] && $trace[1] == $next_trace[1]) {
+				  //$collapse = true;
 				}
 			}
 			
@@ -77,7 +77,7 @@ class ECE595Trace extends ProfilerSimple {
 				} else {
 					$this->trace .= sprintf("%f %f + %s\n", $next_trace[4], $next_trace[2] + $trace[2], $trace[1]);
 				}
-				$total_time += $next_trace[4];
+
 				// skip next item
 				$i += 1;
 				continue;
@@ -102,7 +102,6 @@ class ECE595Trace extends ProfilerSimple {
 					} else {
 						$this->trace .= sprintf("%f %f < %s\n", $trace[4], $trace[2], $trace[1]);
 					}
-					$total_time += $trace[4];
 				}
 			}
 		}
@@ -123,11 +122,9 @@ class ECE595Trace extends ProfilerSimple {
 			}
 		}
 		
-		print "<!-- Total Execution Time: $total_time -->\n";
-		
 		// send to memcached client:
 		//require_once( "./includes/objectcache/MemcachedClient.php" );
-		$start = $this->getTime();
+		$start = $this->getTime('wall');
 		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>false));
 		//$gztrace = gzencode($this->trace, 5);
 		
@@ -136,34 +133,7 @@ class ECE595Trace extends ProfilerSimple {
 			$mc->set($key, $this->trace);
 		}
 		
-		//$this->sendToLogServer(gethostbyname("localhost"), 8888);
-
-		$total = ($this->getTime() - $start);
+		$total = ($this->getTime('wall') - $start);
 		print "<!-- Trace Logging Time: $total -->\n";
-	}
-	
-	function sendToLogServer($address, $port) {
-		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		$socket_msgs = "";
-		if ($socket === false) {
-		    $socket_msgs = $socket_msgs . "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
-		} else {
-		     $socket_msgs = $socket_msgs . "OK.\n";
-		}
-
-		$socket_msgs = $socket_msgs .  "Attempting to connect to '$address' on port '$port'...";
-		$result = socket_connect($socket, $address, $port);
-		if ($result === false) {
-		     $socket_msgs = $socket_msgs . "socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
-		} else {
-		     $socket_msgs = $socket_msgs . "OK.\n";
-		}
-
-		$socket_msgs = $socket_msgs .  "Sending HTTP HEAD request...";
-		socket_write($socket, $this->trace, strlen($this->trace));
-		$socket_msgs = $socket_msgs .  "OK.\n";
-		
-		print "<!-- $socket_msgs -->\n";
-		
 	}
 }
