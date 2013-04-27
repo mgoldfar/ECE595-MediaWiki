@@ -170,7 +170,9 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	public function callFunction( $func /* ... */ ) {
+		wfProfileIn(__METHOD__ . " func=" . $func->id);
 		if ( !($func instanceof Scribunto_LuaStandaloneInterpreterFunction) ) {
+			wfProfileOut(__METHOD__ . " func=$func");
 			throw new MWException( __METHOD__.': invalid function type' );
 		}
 		$args = func_get_args();
@@ -183,6 +185,8 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 			'nargs' => count( $args ),
 			'args' => $args ) );
 		// Convert return values to zero-based
+
+		wfProfileOut(__METHOD__ . " func=". $func->id);
 		return array_values( $result );
 	}
 
