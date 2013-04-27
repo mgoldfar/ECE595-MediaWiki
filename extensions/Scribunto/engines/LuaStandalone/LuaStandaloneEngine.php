@@ -311,6 +311,7 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	protected function sendMessage( $msg ) {
+		wfProfileIn(__METHOD__ . " msg=$msg");
 		$this->debug( "TX ==> {$msg['op']}" );
 		$this->checkValid();
 		// Send the message
@@ -318,9 +319,16 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 		if ( !fwrite( $this->writePipe, $encMsg ) ) {
 			// Write error, probably the process has terminated
 			// If it has, checkStatus() will throw. If not, throw an exception ourselves.
+			
 			$this->checkStatus();
+			
+			wfProfileIn(__METHOD__ . " WRITE ERROR");
+			wfProfileOut(__METHOD__ . " WRITE ERROR");
+			
+			wfProfileOut(__METHOD__ . " msg=$msg");
 			throw $this->engine->newException( 'scribunto-luastandalone-write-error' );
 		}
+		wfProfileIn(__METHOD__ . " msg=$msg");
 	}
 
 	protected function receiveMessage() {
