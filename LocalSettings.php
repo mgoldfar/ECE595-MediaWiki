@@ -26,11 +26,11 @@ $wgMetaNamespace = "Test_Wiki";
 ## For more information on customizing the URLs
 ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
 ## http://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath       = "/~michael";
+$wgScriptPath       = "";
 $wgScriptExtension  = ".php";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer           = "http://localhost";
+$wgServer           = "http://128.46.214.190";
 
 ## The relative URL path to the skins directory
 $wgStylePath        = "$wgScriptPath/skins";
@@ -136,4 +136,13 @@ $wgShowExceptionDetails = true;
 
 # End of automatically generated settings.
 # Add more configuration options below.
+require_once( "$IP/extensions/ParserFunctions/ParserFunctions.php" );
+require_once("$IP/extensions/Cite/Cite.php");
+require_once( "$IP/extensions/Scribunto/Scribunto.php" );
+$wgScribuntoDefaultEngine = 'luastandalone';
 
+error_reporting( -1 );
+ini_set( 'display_errors', 1 );
+
+$wgMemoryLimit="512M";
+ini_set( 'memory_limit', $wgMemoryLimit );

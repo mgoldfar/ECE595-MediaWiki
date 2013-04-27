@@ -90,9 +90,6 @@ class ScribuntoHooks {
 			}
 			$functionName = trim( $frame->expand( $args[1] ) );
 
-			wfProfileIn( __METHOD__ . " mod=$moduleName, function=$functionName");
-			wfProfileOut( __METHOD__ . " mod=$moduleName, function=$functionName");
-
 			unset( $args[0] );
 			unset( $args[1] );
 			$childFrame = $frame->newChild( $args, $title, 1 );

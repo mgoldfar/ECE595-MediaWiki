@@ -170,9 +170,7 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	public function callFunction( $func /* ... */ ) {
-		wfProfileIn(__METHOD__ . " func=" . $func->id);
 		if ( !($func instanceof Scribunto_LuaStandaloneInterpreterFunction) ) {
-			wfProfileOut(__METHOD__ . " func=$func");
 			throw new MWException( __METHOD__.': invalid function type' );
 		}
 		$args = func_get_args();
@@ -185,8 +183,6 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 			'nargs' => count( $args ),
 			'args' => $args ) );
 		// Convert return values to zero-based
-
-		wfProfileOut(__METHOD__ . " func=". $func->id);
 		return array_values( $result );
 	}
 
@@ -267,7 +263,6 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	protected function handleError( $message ) {
-		wfProfileIn(__METHOD__ . " msg=$message");
 		$opts = array();
 		if ( preg_match( '/^(.*?):(\d+): (.*)$/', $message['value'], $m ) ) {
 			$opts['module'] = $m[1];
@@ -277,41 +272,32 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 		if ( isset( $message['trace'] ) ) {
 			$opts['trace'] = array_values( $message['trace'] );
 		}
-		wfProfileOut(__METHOD__ . " msg=$message");
 		throw $this->engine->newLuaError( $message['value'], $opts );
 	}
 
 	protected function dispatch( $msgToLua ) {
-		wfProfileIn(__METHOD__ . " msg=$msgToLua");
 		$this->sendMessage( $msgToLua );
 		while ( true ) {
 			$msgFromLua = $this->receiveMessage();
 
 			switch ( $msgFromLua['op'] ) {
 				case 'return':
-					$r = self::fixNulls( $msgFromLua['values'], $msgFromLua['nvalues'] );
-					wfProfileIn(__METHOD__ . " msg=$msgToLua");
-					return $r;
+					return self::fixNulls( $msgFromLua['values'], $msgFromLua['nvalues'] );
 				case 'call':
 					$msgToLua = $this->handleCall( $msgFromLua );
 					$this->sendMessage( $msgToLua );
 					break;
 				case 'error':
 					$this->handleError( $msgFromLua );
-					wfProfileOut(__METHOD__ . " msg=$msgToLua");
 					return; // not reached
 				default:
 					wfDebug( __METHOD__ .": invalid response op \"{$msgFromLua['op']}\"\n" );
-					wfProfileIn(__METHOD__ . " msg=$msgToLua");
 					throw $this->engine->newException( 'scribunto-luastandalone-decode-error' );
 			}
 		}
-		
-		wfProfileIn(__METHOD__ . " msg=$msgToLua");
 	}
 
 	protected function sendMessage( $msg ) {
-		wfProfileIn(__METHOD__ . " msg=$msg");
 		$this->debug( "TX ==> {$msg['op']}" );
 		$this->checkValid();
 		// Send the message
@@ -319,16 +305,9 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 		if ( !fwrite( $this->writePipe, $encMsg ) ) {
 			// Write error, probably the process has terminated
 			// If it has, checkStatus() will throw. If not, throw an exception ourselves.
-			
 			$this->checkStatus();
-			
-			wfProfileIn(__METHOD__ . " WRITE ERROR");
-			wfProfileOut(__METHOD__ . " WRITE ERROR");
-			
-			wfProfileOut(__METHOD__ . " msg=$msg");
 			throw $this->engine->newException( 'scribunto-luastandalone-write-error' );
 		}
-		wfProfileIn(__METHOD__ . " msg=$msg");
 	}
 
 	protected function receiveMessage() {
