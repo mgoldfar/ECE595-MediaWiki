@@ -267,6 +267,7 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	protected function handleError( $message ) {
+		wfProfileIn(__METHOD__ . " msg=$message");
 		$opts = array();
 		if ( preg_match( '/^(.*?):(\d+): (.*)$/', $message['value'], $m ) ) {
 			$opts['module'] = $m[1];
@@ -276,6 +277,7 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 		if ( isset( $message['trace'] ) ) {
 			$opts['trace'] = array_values( $message['trace'] );
 		}
+		wfProfileOut(__METHOD__ . " msg=$message");
 		throw $this->engine->newLuaError( $message['value'], $opts );
 	}
 
