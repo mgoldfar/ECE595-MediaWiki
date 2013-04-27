@@ -42,14 +42,23 @@ class DatabaseMysql extends DatabaseBase {
 	 * @return resource
 	 */
 	protected function doQuery( $sql ) {
-		wfProfileIn(__METHOD__ . " " . $sql);
+		global $wgRequest;
+		
+		if(!$wgRequest->getText("ShowDBQueries")) {
+			$q = explode(" ", $sql);
+			$prof_sql = $q[0];
+		} else {
+			$prof_sql = $sql;
+		}
+		
+		wfProfileIn(__METHOD__ . " " . $prof_sql);
 		if( $this->bufferResults() ) {
 			$ret = mysql_query( $sql, $this->mConn );
 		} else {
 			$ret = mysql_unbuffered_query( $sql, $this->mConn );
 		}
 		
-		wfProfileOut(__METHOD__ . " " . $sql);
+		wfProfileOut(__METHOD__ . " " . $prof_sql);
 		return $ret;
 	}
 

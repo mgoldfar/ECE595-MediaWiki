@@ -50,6 +50,9 @@ class ECE595Trace extends ProfilerSimple {
 		// collapse any traces that are immediate duplicates:
 		// > func   -->    + func
 		// < func
+			
+		global $wgRequestTime, $wgShowHostnames;
+		$exec_time = microtime( true ) - $wgRequestTime;
 		
 		global $wgRequest;
 		$screen = ($wgRequest->getText("ShowTrace") == "screen");
@@ -107,9 +110,10 @@ class ECE595Trace extends ProfilerSimple {
 		}
 		
 		// Append the trace info to the top:
-		$trace_header = "Request URL=" . $wgRequest->getRequestURL() . "\n" . 
-					    "Request Method=" . $wgRequest->getMethod() . "\n" .
-						"Request ID=" . $wgRequest->getText("RequestID") . "\n";
+		$trace_header = "RequestURL=" . $wgRequest->getRequestURL() . "\n" . 
+					    "RequestMethod=" . $wgRequest->getMethod() . "\n" .
+						"RequestID=" . $wgRequest->getText("RequestID") . "\n" .
+						"ExecutionTime=" . $exec_time . "\n";
 		$this->trace = $trace_header . $this->trace;
 		
 		// By default keep the trace hidden
