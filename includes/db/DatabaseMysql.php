@@ -44,7 +44,7 @@ class DatabaseMysql extends DatabaseBase {
 	protected function doQuery( $sql ) {
 		global $wgRequest;
 		
-		if(!$wgRequest->getText("ShowDBQueries")) {
+		if($wgRequest->getText("ShowTrace") != "screen") {
 			$q = explode(" ", $sql);
 			$prof_sql = $q[0];
 		} else {
