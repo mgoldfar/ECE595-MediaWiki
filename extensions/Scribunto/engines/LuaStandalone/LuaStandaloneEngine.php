@@ -280,25 +280,32 @@ class Scribunto_LuaStandaloneInterpreter extends Scribunto_LuaInterpreter {
 	}
 
 	protected function dispatch( $msgToLua ) {
+		wfProfileIn(__METHOD__ . " msg=$msgToLua");
 		$this->sendMessage( $msgToLua );
 		while ( true ) {
 			$msgFromLua = $this->receiveMessage();
 
 			switch ( $msgFromLua['op'] ) {
 				case 'return':
-					return self::fixNulls( $msgFromLua['values'], $msgFromLua['nvalues'] );
+					$r = self::fixNulls( $msgFromLua['values'], $msgFromLua['nvalues'] );
+					wfProfileIn(__METHOD__ . " msg=$msgToLua");
+					return $r;
 				case 'call':
 					$msgToLua = $this->handleCall( $msgFromLua );
 					$this->sendMessage( $msgToLua );
 					break;
 				case 'error':
 					$this->handleError( $msgFromLua );
+					wfProfileOut(__METHOD__ . " msg=$msgToLua");
 					return; // not reached
 				default:
 					wfDebug( __METHOD__ .": invalid response op \"{$msgFromLua['op']}\"\n" );
+					wfProfileIn(__METHOD__ . " msg=$msgToLua");
 					throw $this->engine->newException( 'scribunto-luastandalone-decode-error' );
 			}
 		}
+		
+		wfProfileIn(__METHOD__ . " msg=$msgToLua");
 	}
 
 	protected function sendMessage( $msg ) {
