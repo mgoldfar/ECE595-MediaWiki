@@ -193,7 +193,7 @@ class DatabaseMysql extends DatabaseBase {
 	 */
 	function freeResult( $res ) {
 		
-		wfProfileIn(__METHOD__);
+		//wfProfileIn(__METHOD__);
 		
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
@@ -205,7 +205,7 @@ class DatabaseMysql extends DatabaseBase {
 			throw new DBUnexpectedError( $this, "Unable to free MySQL result" );
 		}
 		
-		wfProfileOut(__METHOD__);
+		//wfProfileOut(__METHOD__);
 	}
 
 	/**
@@ -218,7 +218,7 @@ class DatabaseMysql extends DatabaseBase {
 			$res = $res->result;
 		}
 		
-		wfProfileIn(__METHOD__);
+		//wfProfileIn(__METHOD__);
 		
 		wfSuppressWarnings();
 		$row = mysql_fetch_object( $res );
@@ -233,7 +233,7 @@ class DatabaseMysql extends DatabaseBase {
 			throw new DBUnexpectedError( $this, 'Error in fetchObject(): ' . htmlspecialchars( $this->lastError() ) );
 		}
 		
-		wfProfileOut(__METHOD__);
+		//wfProfileOut(__METHOD__);
 		
 		return $row;
 	}
@@ -244,7 +244,7 @@ class DatabaseMysql extends DatabaseBase {
 	 * @throws DBUnexpectedError
 	 */
 	function fetchRow( $res ) {
-		wfProfileIn(__METHOD__);
+		//wfProfileIn(__METHOD__);
 		
 		if ( $res instanceof ResultWrapper ) {
 			$res = $res->result;
@@ -262,7 +262,7 @@ class DatabaseMysql extends DatabaseBase {
 			throw new DBUnexpectedError( $this, 'Error in fetchRow(): ' . htmlspecialchars( $this->lastError() ) );
 		}
 		
-		wfProfileOut(__METHOD__);
+		//wfProfileOut(__METHOD__);
 		return $row;
 	}
 

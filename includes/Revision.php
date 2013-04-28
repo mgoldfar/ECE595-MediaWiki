@@ -904,7 +904,7 @@ class Revision implements IDBAccessObject {
 	  * @return String: text the text requested or false on failure
 	  */
 	public static function getRevisionText( $row, $prefix = 'old_' ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 
 		# Get data
 		$textField = $prefix . 'text';
@@ -919,7 +919,7 @@ class Revision implements IDBAccessObject {
 		if( isset( $row->$textField ) ) {
 			$text = $row->$textField;
 		} else {
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return false;
 		}
 
@@ -928,7 +928,7 @@ class Revision implements IDBAccessObject {
 			$url = $text;
 			$parts = explode( '://', $url, 2 );
 			if( count( $parts ) == 1 || $parts[1] == '' ) {
-				wfProfileOut( __METHOD__ );
+				//wfProfileOut( __METHOD__ );
 				return false;
 			}
 			$text = ExternalStore::fetchFromURL( $url );
@@ -948,7 +948,7 @@ class Revision implements IDBAccessObject {
 				$obj = unserialize( $text );
 				if ( !is_object( $obj ) ) {
 					// Invalid object
-					wfProfileOut( __METHOD__ );
+					//wfProfileOut( __METHOD__ );
 					return false;
 				}
 				$text = $obj->getText();
@@ -966,7 +966,7 @@ class Revision implements IDBAccessObject {
 				$text = $wgContLang->iconv( $wgLegacyEncoding, 'UTF-8', $text );
 			}
 		}
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $text;
 	}
 
