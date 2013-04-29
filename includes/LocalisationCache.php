@@ -254,8 +254,8 @@ class LocalisationCache {
 		}
 		
 		if($miss === false) {
-			wfProfileIn( __METHOD__ . " CACHE HIT" );
-			wfProfileOut( __METHOD__ . " CACHE HIT" );
+		  //wfProfileIn( __METHOD__ . " CACHE HIT" );
+		  //wfProfileOut( __METHOD__ . " CACHE HIT" );
 		}
 		
 		wfProfileOut(__METHOD__);
@@ -277,8 +277,8 @@ class LocalisationCache {
 			$this->loadSubitem( $code, $key, $subkey );
 			wfProfileOut( __METHOD__ . ' CACHE MISS' );
 		} else {
-			wfProfileIn( __METHOD__ . ' CACHE HIT' );
-			wfProfileOut( __METHOD__ . ' CACHE HIT' );
+		  //wfProfileIn( __METHOD__ . ' CACHE HIT' );
+		  //wfProfileOut( __METHOD__ . ' CACHE HIT' );
 		}
 		
 		if ( isset( $this->data[$code][$key][$subkey] ) ) {
