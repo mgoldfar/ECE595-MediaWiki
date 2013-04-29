@@ -1001,7 +1001,7 @@ class PPFrame_DOM implements PPFrame {
 			);
 			return '<span class="error">Expansion depth limit exceeded</span>';
 		}
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		++$expansionDepth;
 		if ( $expansionDepth > $this->parser->mHighestExpansionDepth ) {
 			$this->parser->mHighestExpansionDepth = $expansionDepth;
@@ -1173,7 +1173,7 @@ class PPFrame_DOM implements PPFrame {
 					$newIterator = $contextNode->childNodes;
 				}
 			} else {
-				wfProfileOut( __METHOD__ );
+				//wfProfileOut( __METHOD__ );
 				throw new MWException( __METHOD__.': Invalid parameter type' );
 			}
 
@@ -1197,7 +1197,7 @@ class PPFrame_DOM implements PPFrame {
 			}
 		}
 		--$expansionDepth;
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $outStack[0];
 	}
 
