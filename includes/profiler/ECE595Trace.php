@@ -108,7 +108,7 @@ class ECE595Trace extends ProfilerSimple {
 				}
 			}
 		}
-		
+				
 		// Append the trace info to the top:
 		$trace_header = "RequestURL=" . $wgRequest->getRequestURL() . "\n" . 
 					    "RequestMethod=" . $wgRequest->getMethod() . "\n" .
@@ -128,8 +128,15 @@ class ECE595Trace extends ProfilerSimple {
 		
 		// send to memcached client:
 		//require_once( "./includes/objectcache/MemcachedClient.php" );
-		$start = $this->getTime('wall');
-		$mc = new MWMemcached(array("servers"=>array("localhost:11211"), "debug"=>false));
+		$start = $this->getTime('wall');	
+	
+		// Get the name of the server for storing the trace
+		$traceserver = $wgRequest->getText("TraceServer");
+		if ($traceserver == "") {
+			$traceserver = "localhost:11211";
+		}
+			
+		$mc = new MWMemcached(array("servers"=>array($traceserver), "debug"=>false));
 		//$gztrace = gzencode($this->trace, 5);
 		
 		if ($wgRequest->getText("RequestID") !== "") {
