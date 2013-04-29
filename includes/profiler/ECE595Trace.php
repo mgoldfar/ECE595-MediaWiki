@@ -67,8 +67,8 @@ class ECE595Trace extends ProfilerSimple {
 			$next_trace = NULL;
 			if($i + 1 < count($this->trace_array)) {
 				$next_trace = $this->trace_array[$i + 1];
-				if((!$trace[0] || !$next_trace[0]) && $trace[0] != $next_trace[0] && $trace[1] == $next_trace[1]) {
-				  //$collapse = true;
+				if($trace[0] == true && $next_trace[0] == false && $trace[1] == $next_trace[1]) {
+				  $collapse = true;
 				}
 			}
 			
@@ -141,6 +141,11 @@ class ECE595Trace extends ProfilerSimple {
 		
 		if ($wgRequest->getText("RequestID") !== "") {
 			$key = $wgRequest->getText("RequestID");
+			
+			if($wgRequest->getText("CompressTrace") == "gzip") {
+				$this->trace = gzencode($this->trace);
+			}
+			
 			$mc->set($key, $this->trace);
 		}
 		

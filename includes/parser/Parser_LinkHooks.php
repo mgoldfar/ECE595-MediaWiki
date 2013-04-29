@@ -130,7 +130,7 @@ class Parser_LinkHooks extends Parser {
 	function replaceInternalLinks2( &$s ) {
 		wfProfileIn( __METHOD__ );
 
-		wfProfileIn( __METHOD__.'-setup' );
+		//wfProfileIn( __METHOD__.'-setup' );
 		static $tc = FALSE, $titleRegex;//$e1, $e1_img;
 		if( !$tc ) {
 			# the % is needed to support urlencoded titles as well
@@ -146,12 +146,12 @@ class Parser_LinkHooks extends Parser {
 		$holders = new LinkHolderArray( $this );
 		
 		if( is_null( $this->mTitle ) ) {
-			wfProfileOut( __METHOD__ );
-			wfProfileOut( __METHOD__.'-setup' );
+			//wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__.'-setup' );
 			throw new MWException( __METHOD__.": \$this->mTitle is null\n" );
 		}
 
-		wfProfileOut( __METHOD__.'-setup' );
+		//wfProfileOut( __METHOD__.'-setup' );
 		
 		$offset = 0;
 		$offsetStack = array();
@@ -211,23 +211,23 @@ class Parser_LinkHooks extends Parser {
 		
 		
 		# Now expand our tree
-		wfProfileIn( __METHOD__.'-expand' );
+		//wfProfileIn( __METHOD__.'-expand' );
 		$s = $markers->expand( $s );
-		wfProfileOut( __METHOD__.'-expand' );
+		//wfProfileOut( __METHOD__.'-expand' );
 		
 		wfProfileOut( __METHOD__ );
 		return $holders;
 	}
 	
 	function replaceInternalLinksCallback( $parser, $holders, $markers, $titleText, $paramText ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		$wt = isset($paramText) ? "[[$titleText|$paramText]]" : "[[$titleText]]";
-		wfProfileIn( __METHOD__."-misc" );
+		//wfProfileIn( __METHOD__."-misc" );
 		# Don't allow internal links to pages containing
 		# PROTO: where PROTO is a valid URL protocol; these
 		# should be external links.
 		if( preg_match('/^\b(?i:' . wfUrlProtocols() . ')/', $titleText) ) {
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return $wt;
 		}
 		
@@ -240,17 +240,17 @@ class Parser_LinkHooks extends Parser {
 		$leadingColon = $titleText[0] == ':';
 		if( $leadingColon ) $titleText = substr( $titleText, 1 );
 		
-		wfProfileOut( __METHOD__."-misc" );
+		//wfProfileOut( __METHOD__."-misc" );
 		# Make title object
-		wfProfileIn( __METHOD__."-title" );
+		//wfProfileIn( __METHOD__."-title" );
 		$title = Title::newFromText( $this->mStripState->unstripNoWiki( $titleText ) );
 		if( !$title ) {
-			wfProfileOut( __METHOD__."-title" );
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__."-title" );
+			//wfProfileOut( __METHOD__ );
 			return $wt;
 		}
 		$ns = $title->getNamespace();
-		wfProfileOut( __METHOD__."-title" );
+		//wfProfileOut( __METHOD__."-title" );
 		
 		# Default for Namespaces is a default link
 		# ToDo: Default for patterns is plain wikitext
@@ -279,7 +279,7 @@ class Parser_LinkHooks extends Parser {
 			$return = isset($paramText) ? "[[$titleText|$paramText]]" : "[[$titleText]]";
 		}
 		# Content was returned, return it
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $return;
 	}
 	

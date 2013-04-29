@@ -164,8 +164,8 @@ class ParserOutput extends CacheTime {
 	 * @param $id Mixed: optional known page_id so we can skip the lookup
 	 */
 	function addLink( $title, $id = null ) {
-		wfProfileIn(__METHOD__ . " title=" . $title . " id=" . $id);
-		wfProfileOut(__METHOD__ . " title=" . $title . " id=" . $id);
+		//wfProfileIn(__METHOD__ . " title=" . $title . " id=" . $id);
+		//wfProfileOut(__METHOD__ . " title=" . $title . " id=" . $id);
 		if ( $title->isExternal() ) {
 			// Don't record interwikis in pagelinks
 			$this->addInterwikiLink( $title );

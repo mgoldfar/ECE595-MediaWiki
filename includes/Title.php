@@ -1400,7 +1400,7 @@ class Title {
 	 * @return String the URL
 	 */
 	public function getLinkURL( $query = '', $query2 = false ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		if ( $this->isExternal() ) {
 			$ret = $this->getFullURL( $query, $query2 );
 		} elseif ( $this->getPrefixedText() === '' && $this->getFragment() !== '' ) {
@@ -1408,7 +1408,7 @@ class Title {
 		} else {
 			$ret = $this->getLocalURL( $query, $query2 ) . $this->getFragmentForURL();
 		}
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $ret;
 	}
 

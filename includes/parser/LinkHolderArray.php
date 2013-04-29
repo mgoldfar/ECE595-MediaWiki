@@ -216,7 +216,7 @@ class LinkHolderArray {
 	 * @return string
 	 */
 	function makeHolder( $nt, $text = '', $query = array(), $trail = '', $prefix = ''  ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		if ( ! is_object($nt) ) {
 			# Fail gracefully
 			$retVal = "<!-- ERROR -->{$prefix}{$text}{$trail}";
@@ -246,7 +246,7 @@ class LinkHolderArray {
 			}
 			$this->size++;
 		}
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $retVal;
 	}
 

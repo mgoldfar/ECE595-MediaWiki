@@ -193,9 +193,9 @@ class Linker {
 	public static function link(
 		$target, $html = null, $customAttribs = array(), $query = array(), $options = array()
 	) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		if ( !$target instanceof Title ) {
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return "<!-- ERROR -->$html";
 		}
 
@@ -211,7 +211,7 @@ class Linker {
 		$ret = null;
 		if ( !wfRunHooks( 'LinkBegin', array( $dummy, $target, &$html,
 		&$customAttribs, &$query, &$options, &$ret ) ) ) {
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return $ret;
 		}
 
@@ -219,7 +219,7 @@ class Linker {
 		$target = self::normaliseSpecialPage( $target );
 
 		# If we don't know whether the page exists, let's find out.
-		wfProfileIn( __METHOD__ . '-checkPageExistence' );
+		//wfProfileIn( __METHOD__ . '-checkPageExistence' );
 		if ( !in_array( 'known', $options ) and !in_array( 'broken', $options ) ) {
 			if ( $target->isKnown() ) {
 				$options[] = 'known';
@@ -227,7 +227,7 @@ class Linker {
 				$options[] = 'broken';
 			}
 		}
-		wfProfileOut( __METHOD__ . '-checkPageExistence' );
+		//wfProfileOut( __METHOD__ . '-checkPageExistence' );
 
 		$oldquery = array();
 		if ( in_array( "forcearticlepath", $options ) && $query ) {
@@ -254,7 +254,7 @@ class Linker {
 			$ret = Html::rawElement( 'a', $attribs, $html );
 		}
 
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $ret;
 	}
 
@@ -278,7 +278,7 @@ class Linker {
 	 * @return String
 	 */
 	private static function linkUrl( $target, $query, $options ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		# We don't want to include fragments for broken links, because they
 		# generally make no sense.
 		if ( in_array( 'broken', $options ) && $target->mFragment !== '' ) {
@@ -295,7 +295,7 @@ class Linker {
 			$query['redlink'] = '1';
 		}
 		$ret = $target->getLinkURL( $query );
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $ret;
 	}
 
@@ -309,12 +309,12 @@ class Linker {
 	 * @return array
 	 */
 	private static function linkAttribs( $target, $attribs, $options ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		global $wgUser;
 		$defaults = array();
 
 		if ( !in_array( 'noclasses', $options ) ) {
-			wfProfileIn( __METHOD__ . '-getClasses' );
+			//wfProfileIn( __METHOD__ . '-getClasses' );
 			# Now build the classes.
 			$classes = array();
 
@@ -335,7 +335,7 @@ class Linker {
 			if ( $classes != array() ) {
 				$defaults['class'] = implode( ' ', $classes );
 			}
-			wfProfileOut( __METHOD__ . '-getClasses' );
+			//wfProfileOut( __METHOD__ . '-getClasses' );
 		}
 
 		# Get a default title attribute.
@@ -359,7 +359,7 @@ class Linker {
 				$ret[$key] = $val;
 			}
 		}
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $ret;
 	}
 
@@ -877,7 +877,7 @@ class Linker {
 		if ( ! $title instanceof Title ) {
 			return "<!-- ERROR -->" . htmlspecialchars( $label );
 		}
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		if ( $label == '' ) {
 			$label = $title->getPrefixedText();
 		}
@@ -888,18 +888,18 @@ class Linker {
 			$redir = RepoGroup::singleton()->getLocalRepo()->checkRedirect( $title );
 
 			if ( $redir ) {
-				wfProfileOut( __METHOD__ );
+				//wfProfileOut( __METHOD__ );
 				return self::linkKnown( $title, $encLabel, array(), wfCgiToArray( $query ) );
 			}
 
 			$href = self::getUploadUrl( $title, $query );
 
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return '<a href="' . htmlspecialchars( $href ) . '" class="new" title="' .
 				htmlspecialchars( $title->getPrefixedText(), ENT_QUOTES ) . '">' .
 				$encLabel . '</a>';
 		} else {
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__ );
 			return self::linkKnown( $title, $encLabel, array(), wfCgiToArray( $query ) );
 		}
 	}
@@ -1201,7 +1201,7 @@ class Linker {
 	 * @return mixed|String
 	 */
 	public static function formatComment( $comment, $title = null, $local = false ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 
 		# Sanitize text a bit:
 		$comment = str_replace( "\n", " ", $comment );
@@ -1212,7 +1212,7 @@ class Linker {
 		$comment = self::formatAutocomments( $comment, $title, $local );
 		$comment = self::formatLinksInComment( $comment, $title, $local );
 
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $comment;
 	}
 

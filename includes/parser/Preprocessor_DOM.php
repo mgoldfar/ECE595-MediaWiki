@@ -171,7 +171,7 @@ class Preprocessor_DOM implements Preprocessor {
 			throw new MWException( __METHOD__.': generated node count limit exceeded' );
 		}
 
-		wfProfileIn( __METHOD__.'-loadXML' );
+		//wfProfileIn( __METHOD__.'-loadXML' );
 		$dom = new DOMDocument;
 		wfSuppressWarnings();
 		$result = $dom->loadXML( $xml );
@@ -186,7 +186,7 @@ class Preprocessor_DOM implements Preprocessor {
 			}
 		}
 		$obj = new PPNode_DOM( $dom->documentElement );
-		wfProfileOut( __METHOD__.'-loadXML' );
+		//wfProfileOut( __METHOD__.'-loadXML' );
 		if ( $cacheable ) {
 			wfProfileOut( __METHOD__.'-cacheable' );
 		}
@@ -200,7 +200,7 @@ class Preprocessor_DOM implements Preprocessor {
 	 * @return string
 	 */
 	function preprocessToXml( $text, $flags = 0 ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 		$rules = array(
 			'{' => array(
 				'end' => '}',
@@ -696,7 +696,7 @@ class Preprocessor_DOM implements Preprocessor {
 		$stack->rootAccum .= '</root>';
 		$xml = $stack->rootAccum;
 
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 
 		return $xml;
 	}

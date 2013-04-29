@@ -1726,9 +1726,9 @@ class Parser {
 	 * @private
 	 */
 	function replaceInternalLinks2( &$s ) {
-		wfProfileIn( __METHOD__ );
+		//wfProfileIn( __METHOD__ );
 
-		wfProfileIn( __METHOD__.'-setup' );
+		//wfProfileIn( __METHOD__.'-setup' );
 		static $tc = FALSE, $e1, $e1_img;
 		# the % is needed to support urlencoded titles as well
 		if ( !$tc ) {
@@ -1758,8 +1758,8 @@ class Parser {
 		}
 
 		if ( is_null( $this->mTitle ) ) {
-			wfProfileOut( __METHOD__.'-setup' );
-			wfProfileOut( __METHOD__ );
+			//wfProfileOut( __METHOD__.'-setup' );
+			//wfProfileOut( __METHOD__ );
 			throw new MWException( __METHOD__.": \$this->mTitle is null\n" );
 		}
 		$nottalk = !$this->mTitle->isTalkPage();
@@ -1782,7 +1782,7 @@ class Parser {
 			$selflink = array( $this->mTitle->getPrefixedText() );
 		}
 		$useSubpages = $this->areSubpagesAllowed();
-		wfProfileOut( __METHOD__.'-setup' );
+		//wfProfileOut( __METHOD__.'-setup' );
 
 		# Loop for each link
 		for ( ; $line !== false && $line !== null ; $a->next(), $line = $a->current() ) {
@@ -1795,7 +1795,7 @@ class Parser {
 			}
 
 			if ( $useLinkPrefixExtension ) {
-				wfProfileIn( __METHOD__.'-prefixhandling' );
+				//wfProfileIn( __METHOD__.'-prefixhandling' );
 				if ( preg_match( $e2, $s, $m ) ) {
 					$prefix = $m[2];
 					$s = $m[1];
@@ -1807,12 +1807,12 @@ class Parser {
 					$prefix = $first_prefix;
 					$first_prefix = false;
 				}
-				wfProfileOut( __METHOD__.'-prefixhandling' );
+				//wfProfileOut( __METHOD__.'-prefixhandling' );
 			}
 
 			$might_be_img = false;
 
-			wfProfileIn( __METHOD__."-e1" );
+			//wfProfileIn( __METHOD__."-e1" );
 			if ( preg_match( $e1, $line, $m ) ) { # page with normal text or alt
 				$text = $m[2];
 				# If we get a ] at the beginning of $m[3] that means we have a link that's something like:
@@ -1846,18 +1846,18 @@ class Parser {
 				$trail = "";
 			} else { # Invalid form; output directly
 				$s .= $prefix . '[[' . $line ;
-				wfProfileOut( __METHOD__."-e1" );
+				//wfProfileOut( __METHOD__."-e1" );
 				continue;
 			}
-			wfProfileOut( __METHOD__."-e1" );
-			wfProfileIn( __METHOD__."-misc" );
+			//wfProfileOut( __METHOD__."-e1" );
+			//wfProfileIn( __METHOD__."-misc" );
 
 			# Don't allow internal links to pages containing
 			# PROTO: where PROTO is a valid URL protocol; these
 			# should be external links.
 			if ( preg_match( '/^(?i:' . $this->mUrlProtocols . ')/', $m[1] ) ) {
 				$s .= $prefix . '[[' . $line ;
-				wfProfileOut( __METHOD__."-misc" );
+				//wfProfileOut( __METHOD__."-misc" );
 				continue;
 			}
 
@@ -1874,21 +1874,21 @@ class Parser {
 				$link = substr( $link, 1 );
 			}
 
-			wfProfileOut( __METHOD__."-misc" );
-			wfProfileIn( __METHOD__."-title" );
+			//wfProfileOut( __METHOD__."-misc" );
+			//wfProfileIn( __METHOD__."-title" );
 			$nt = Title::newFromText( $this->mStripState->unstripNoWiki( $link ) );
 			if ( $nt === null ) {
 				$s .= $prefix . '[[' . $line;
-				wfProfileOut( __METHOD__."-title" );
+				//wfProfileOut( __METHOD__."-title" );
 				continue;
 			}
 
 			$ns = $nt->getNamespace();
 			$iw = $nt->getInterWiki();
-			wfProfileOut( __METHOD__."-title" );
+			//wfProfileOut( __METHOD__."-title" );
 
 			if ( $might_be_img ) { # if this is actually an invalid link
-				wfProfileIn( __METHOD__."-might_be_img" );
+				//wfProfileIn( __METHOD__."-might_be_img" );
 				if ( $ns == NS_FILE && $noforce ) { # but might be an image
 					$found = false;
 					while ( true ) {
@@ -1920,16 +1920,16 @@ class Parser {
 						$holders->merge( $this->replaceInternalLinks2( $text ) );
 						$s .= "{$prefix}[[$link|$text";
 						# note: no $trail, because without an end, there *is* no trail
-						wfProfileOut( __METHOD__."-might_be_img" );
+						//wfProfileOut( __METHOD__."-might_be_img" );
 						continue;
 					}
 				} else { # it's not an image, so output it raw
 					$s .= "{$prefix}[[$link|$text";
 					# note: no $trail, because without an end, there *is* no trail
-					wfProfileOut( __METHOD__."-might_be_img" );
+					//wfProfileOut( __METHOD__."-might_be_img" );
 					continue;
 				}
-				wfProfileOut( __METHOD__."-might_be_img" );
+				//wfProfileOut( __METHOD__."-might_be_img" );
 			}
 
 			$wasblank = ( $text  == '' );
@@ -1946,18 +1946,18 @@ class Parser {
 			# Link not escaped by : , create the various objects
 			if ( $noforce ) {
 				# Interwikis
-				wfProfileIn( __METHOD__."-interwiki" );
+				//wfProfileIn( __METHOD__."-interwiki" );
 				if ( $iw && $this->mOptions->getInterwikiMagic() && $nottalk && Language::fetchLanguageName( $iw, null, 'mw' ) ) {
 					$this->mOutput->addLanguageLink( $nt->getFullText() );
 					$s = rtrim( $s . $prefix );
 					$s .= trim( $trail, "\n" ) == '' ? '': $prefix . $trail;
-					wfProfileOut( __METHOD__."-interwiki" );
+					//wfProfileOut( __METHOD__."-interwiki" );
 					continue;
 				}
-				wfProfileOut( __METHOD__."-interwiki" );
+				//wfProfileOut( __METHOD__."-interwiki" );
 
 				if ( $ns == NS_FILE ) {
-					wfProfileIn( __METHOD__."-image" );
+					//wfProfileIn( __METHOD__."-image" );
 					if ( !wfIsBadImage( $nt->getDBkey(), $this->mTitle ) ) {
 						if ( $wasblank ) {
 							# if no parameters were passed, $text
@@ -1978,12 +1978,12 @@ class Parser {
 					} else {
 						$s .= $prefix . $trail;
 					}
-					wfProfileOut( __METHOD__."-image" );
+					//wfProfileOut( __METHOD__."-image" );
 					continue;
 				}
 
 				if ( $ns == NS_CATEGORY ) {
-					wfProfileIn( __METHOD__."-category" );
+					//wfProfileIn( __METHOD__."-category" );
 					$s = rtrim( $s . "\n" ); # bug 87
 
 					if ( $wasblank ) {
@@ -2002,7 +2002,7 @@ class Parser {
 					 */
 					$s .= trim( $prefix . $trail, "\n" ) == '' ? '' : $prefix . $trail;
 
-					wfProfileOut( __METHOD__."-category" );
+					//wfProfileOut( __METHOD__."-category" );
 					continue;
 				}
 			}
@@ -2018,7 +2018,7 @@ class Parser {
 			# NS_MEDIA is a pseudo-namespace for linking directly to a file
 			# @todo FIXME: Should do batch file existence checks, see comment below
 			if ( $ns == NS_MEDIA ) {
-				wfProfileIn( __METHOD__."-media" );
+				//wfProfileIn( __METHOD__."-media" );
 				# Give extensions a chance to select the file revision for us
 				$options = array();
 				$descQuery = false;
@@ -2029,11 +2029,11 @@ class Parser {
 				# Cloak with NOPARSE to avoid replacement in replaceExternalLinks
 				$s .= $prefix . $this->armorLinks(
 					Linker::makeMediaLinkFile( $nt, $file, $text ) ) . $trail;
-				wfProfileOut( __METHOD__."-media" );
+				//wfProfileOut( __METHOD__."-media" );
 				continue;
 			}
 
-			wfProfileIn( __METHOD__."-always_known" );
+			//wfProfileIn( __METHOD__."-always_known" );
 			# Some titles, such as valid special pages or files in foreign repos, should
 			# be shown as bluelinks even though they're not included in the page table
 			#
@@ -2046,9 +2046,9 @@ class Parser {
 				# Links will be added to the output link list after checking
 				$s .= $holders->makeHolder( $nt, $text, array(), $trail, $prefix );
 			}
-			wfProfileOut( __METHOD__."-always_known" );
+			//wfProfileOut( __METHOD__."-always_known" );
 		}
-		wfProfileOut( __METHOD__ );
+		//wfProfileOut( __METHOD__ );
 		return $holders;
 	}
 
@@ -3111,7 +3111,7 @@ class Parser {
 	function braceSubstitution( $piece, $frame ) {
 		global $wgContLang;
 		wfProfileIn( __METHOD__ );
-		wfProfileIn( __METHOD__.'-setup' );
+		//wfProfileIn( __METHOD__.'-setup' );
 
 		# Flags
 		$found = false;             # $text has been filled
@@ -3136,12 +3136,12 @@ class Parser {
 		# $args is a list of argument nodes, starting from index 0, not including $part1
 		# @todo FIXME: If piece['parts'] is null then the call to getLength() below won't work b/c this $args isn't an object
 		$args = ( null == $piece['parts'] ) ? array() : $piece['parts'];
-		wfProfileOut( __METHOD__.'-setup' );
+		//wfProfileOut( __METHOD__.'-setup' );
 
 		$titleProfileIn = null; // profile templates
 
 		# SUBST
-		wfProfileIn( __METHOD__.'-modifiers' );
+		//wfProfileIn( __METHOD__.'-modifiers' );
 		if ( !$found ) {
 
 			$substMatch = $this->mSubstWords->matchStartAndRemove( $part1 );
@@ -3198,11 +3198,11 @@ class Parser {
 				$forceRawInterwiki = true;
 			}
 		}
-		wfProfileOut( __METHOD__.'-modifiers' );
+		//wfProfileOut( __METHOD__.'-modifiers' );
 
 		# Parser functions
 		if ( !$found ) {
-			wfProfileIn( __METHOD__ . '-pfunc' );
+			//wfProfileIn( __METHOD__ . '-pfunc' );
 
 			$colonPos = strpos( $part1, ':' );
 			if ( $colonPos !== false ) {
@@ -3220,7 +3220,7 @@ class Parser {
 					}
 				}
 				if ( $function ) {
-					wfProfileIn( __METHOD__ . '-pfunc-' . $function );
+					//wfProfileIn( __METHOD__ . '-pfunc-' . $function );
 					list( $callback, $flags ) = $this->mFunctionHooks[$function];
 					$initialArgs = array( &$this );
 					$funcArgs = array( trim( substr( $part1, $colonPos + 1 ) ) );
@@ -3242,8 +3242,8 @@ class Parser {
 
 					# Workaround for PHP bug 35229 and similar
 					if ( !is_callable( $callback ) ) {
-						wfProfileOut( __METHOD__ . '-pfunc-' . $function );
-						wfProfileOut( __METHOD__ . '-pfunc' );
+						//wfProfileOut( __METHOD__ . '-pfunc-' . $function );
+						//wfProfileOut( __METHOD__ . '-pfunc' );
 						wfProfileOut( __METHOD__ );
 						throw new MWException( "Tag hook for $function is not callable\n" );
 					}
@@ -3268,10 +3268,10 @@ class Parser {
 						$text = $this->preprocessToDom( $text, $preprocessFlags );
 						$isChildObj = true;
 					}
-					wfProfileOut( __METHOD__ . '-pfunc-' . $function );
+					//wfProfileOut( __METHOD__ . '-pfunc-' . $function );
 				}
 			}
-			wfProfileOut( __METHOD__ . '-pfunc' );
+			//wfProfileOut( __METHOD__ . '-pfunc' );
 		}
 
 		# Finish mangling title and then check for loops.

@@ -88,9 +88,11 @@ abstract class FileCacheBase {
 	 * @return bool
 	 */
 	public function isCached() {
+		wfProfileIn(__METHOD__);
 		if ( $this->mCached === null ) {
 			$this->mCached = file_exists( $this->cachePath() );
 		}
+		wfProfileOut(__METHOD__);
 		return $this->mCached;
 	}
 
@@ -138,11 +140,19 @@ abstract class FileCacheBase {
 	 * @return string
 	 */
 	public function fetchText() {
+		wfProfileOut(__METHOD__ );
 		if( $this->useGzip() ) {
 			$fh = gzopen( $this->cachePath(), 'rb' );
-			return stream_get_contents( $fh );
+			$r = stream_get_contents( $fh );
+			wfProfileOut(__METHOD__);
+			
+			return $r;
+			
 		} else {
-			return file_get_contents( $this->cachePath() );
+			$r = file_get_contents( $this->cachePath() );
+			wfProfileOut(__METHOD__);
+			
+			return $r;
 		}
 	}
 
@@ -152,8 +162,13 @@ abstract class FileCacheBase {
 	 */
 	public function saveText( $text ) {
 		global $wgUseFileCache;
+		
+		$textlen = strlen($text);
+		
+		wfProfileIn(__METHOD__ . " len=$textlen");
 
 		if ( !$wgUseFileCache ) {
+			wfProfileOut(__METHOD__ . " len=$textlen");
 			return false;
 		}
 
@@ -165,10 +180,12 @@ abstract class FileCacheBase {
 		if ( !file_put_contents( $this->cachePath(), $text, LOCK_EX ) ) {
 			wfDebug( __METHOD__ . "() failed saving ". $this->cachePath() . "\n");
 			$this->mCached = null;
+			wfProfileOut(__METHOD__ . " len=$textlen");
 			return false;
 		}
 
 		$this->mCached = true;
+		wfProfileOut(__METHOD__ . " len=$textlen");
 		return $text;
 	}
 
