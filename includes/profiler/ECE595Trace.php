@@ -143,7 +143,7 @@ class ECE595Trace extends ProfilerSimple {
 			$key = $wgRequest->getText("RequestID");
 			
 			if($wgRequest->getText("CompressTrace") == "gzip") {
-				$this->trace = gzencode($this->trace);
+				$this->trace = gzcompress($this->trace, 9);
 			}
 			
 			$mc->set($key, $this->trace);
