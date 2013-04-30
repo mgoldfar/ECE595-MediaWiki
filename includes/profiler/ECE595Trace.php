@@ -4,10 +4,12 @@ class ECE595Trace extends ProfilerSimple {
 	var $trace = "";
 	var $trace_array = array();
 	var $memory = 0;
+	var $depth = 0;
 	
 	function profileIn( $functionname ) {
-	  parent::profileIn( $functionname, 'wall' );
+		parent::profileIn( $functionname, 'wall' );
 	
+		$this->depth++;
 		$item = array(true, $functionname, $this->memoryDiff(), count($this->mWorkStack), 0.0);
 		array_push($this->trace_array, $item);	
 	}
@@ -38,6 +40,14 @@ class ECE595Trace extends ProfilerSimple {
 			$item = array(false, $functionname, $this->memoryDiff(), count($this->mWorkStack), $elapsedreal);
 			array_push($this->trace_array, $item);
 		}
+		
+		// Special case: if the we are closing a function call that is the immediate child of the root
+		// then we must add its execution time to the root node
+		if($this->depth == 1) {
+			$this->trace_array[0][4] += $item[4];
+		}
+		
+		$this->depth--;
 	}
 
 	function memoryDiff() {
@@ -58,7 +68,7 @@ class ECE595Trace extends ProfilerSimple {
 		$screen = ($wgRequest->getText("ShowTrace") == "screen");
 		
 		$depth = 1;
-		
+		$trace_process_time_start = microtime( true );
 		for($i = 0; $i < count($this->trace_array); $i++) {
 			// if the function called immediatly after is the same name then it can be collapsed
 			// corner case: recursive calls, if both entries are "OPEN" then do not collapse
@@ -108,12 +118,17 @@ class ECE595Trace extends ProfilerSimple {
 				}
 			}
 		}
-				
+		
+		$trace_process_time = microtime( true ) - $trace_process_time_start;
+		$exec_time_actual = $exec_time - $trace_process_time;
+		
 		// Append the trace info to the top:
 		$trace_header = "RequestURL=" . $wgRequest->getRequestURL() . "\n" . 
 					    "RequestMethod=" . $wgRequest->getMethod() . "\n" .
 						"RequestID=" . $wgRequest->getText("RequestID") . "\n" .
-						"ExecutionTime=" . $exec_time . "\n";
+						"ExecutionTime=" . $exec_time . "\n" .
+						"TraceProcessTime=" . $trace_process_time . "\n" .
+						"ExecutionTimeActual=" . $exec_time_actual . "\n";
 		$this->trace = $trace_header . $this->trace;
 		
 		// By default keep the trace hidden
