@@ -1756,7 +1756,7 @@ $wgParserCacheExpireTime = 86400;
  * Select which DBA handler <http://www.php.net/manual/en/dba.requirements.php>
  * to use as CACHE_DBA backend.
  */
-$wgDBAhandler = 'db3';
+$wgDBAhandler = 'db4';
 
 /**
  * Deprecated alias for $wgSessionsInObjectCache.
