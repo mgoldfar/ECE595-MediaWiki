@@ -180,7 +180,7 @@ class MediaWiki {
 		$title = $this->context->getTitle();
 		$output = $this->context->getOutput();
 		$user = $this->context->getUser();
-
+		
 		if ( $request->getVal( 'printable' ) === 'yes' ) {
 			$output->setPrintable();
 		}

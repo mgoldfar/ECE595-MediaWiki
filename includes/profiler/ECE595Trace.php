@@ -126,6 +126,7 @@ class ECE595Trace extends ProfilerSimple {
 		$trace_header = "RequestURL=" . $wgRequest->getRequestURL() . "\n" . 
 					    "RequestMethod=" . $wgRequest->getMethod() . "\n" .
 						"RequestID=" . $wgRequest->getText("RequestID") . "\n" .
+						"CacheType=" . $wgRequest->getText("CacheType") . "\n" .
 						"ExecutionTime=" . $exec_time . "\n" .
 						"TraceProcessTime=" . $trace_process_time . "\n" .
 						"ExecutionTimeActual=" . $exec_time_actual . "\n";

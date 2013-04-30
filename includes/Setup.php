@@ -461,6 +461,28 @@ if ( $wgCommandLineMode ) {
 wfProfileOut( $fname . '-misc1' );
 wfProfileIn( $fname . '-memcached' );
 
+// Override the cache type based on the URL
+
+global $wgMainCacheType, $wgParserCacheType, $wgSessionCacheType, $wgLanguageConverterCacheType, $wgResourceLoaderCacheType;
+$cache_setting = CACHE_NONE;
+if(isset( $_GET["CacheType"] )) {
+	$cache_param = $_GET["CacheType"];
+	if ($cache_param == "DB") {
+		$cache_setting = CACHE_DB;
+	} else if ($cache_param == "DBA") {
+		$cache_setting = CACHE_DBA;
+	} else if($cache_param == "MEMCACHED") {
+		$cache_setting = CACHE_MEMCACHED;
+	}
+
+	echo "<!-- CACHE PARAM TYPE = $cache_param ($cache_setting) -->\n\n";
+	$wgMainCacheType = $cache_setting;
+	$wgParserCacheType  = $cache_setting;
+	$wgSessionCacheType = $cache_setting;
+	$wgLanguageConverterCacheType = $cache_setting;
+	$wgResourceLoaderCacheType = $cache_setting;
+}
+
 $wgMemc = wfGetMainCache();
 $messageMemc = wfGetMessageCacheStorage();
 $parserMemc = wfGetParserCacheStorage();
